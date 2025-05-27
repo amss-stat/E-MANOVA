@@ -72,7 +72,21 @@ permutation_null<-function(A,W){
   return(list(expection_null=mean.null, variance_null=variance.null, ske_null=skewness.null))
 }
 
+#' main function
 #' @description core function for calcualte EMANOVA p-values
+#' @param multi_d_mat distance matrix
+#' @param predictor centered predictor variable
+#' @param confonding_stat variables indicate whether confonding variables should be included
+#' @param confonding_var confonding variables
+#' @param r_vec vectors of r values
+#' @return p_value_mat matrix of p-values with different distance and different r values
+#' @return final p-value
+#' @import GUniFrac
+#' @importFrom vegan vegdist
+#' @importFrom abind abind
+#' @example inst/examples/test_examples.R
+#' @export
+
 adaptive_PREANOVA<-function(multi_d_mat,predictor,confonding_stat=F,confonding_var=NA,r_vec){
   number_of_distances<-length(multi_d_mat[1,1,])
   number_of_r<-length(r_vec)
@@ -98,3 +112,4 @@ adaptive_PREANOVA<-function(multi_d_mat,predictor,confonding_stat=F,confonding_v
   pvalue<-0.5-(atan(cauchy_statistic)/pi)
   return(list(p_value_mat=p_value_mat, final_p_value=pvalue,gamma_hat_mat=gamma_hat_mat))
 }
+
