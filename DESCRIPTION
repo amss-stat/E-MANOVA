@@ -4,8 +4,14 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Deliang", "Bu", , "budeliang@cueb.edu.cn", role = c("aut", "cre"))
 Description: test EMANOVA (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Imports: 
+    abind,
+    fBasics,
+    GUniFrac,
+    MASS,
+    PearsonDS,
+    vegan

@@ -1,9 +1,9 @@
-F_stat<-function(d_mat,predictor,confonding_stat=F,confonding_var=NA,r){
+F_stat<-function(d_mat,predictor,confonding_stat=FALSE,confonding_var=NA,r){
   n<-nrow(d_mat)
   sim_mat<-(-1/2)*d_mat^2
   ide_mat<-diag(1,n,n)
   one_vec<-matrix(1, nrow = n, ncol = 1)
-  pre_mat<-as.matrix(scale(predictor, center=T, scale = F))
+  pre_mat<-as.matrix(scale(predictor, center=T, scale = FALSE))
   G_mat<-(ide_mat-(one_vec%*%t(one_vec)/n))%*%sim_mat%*%(ide_mat-(one_vec%*%t(one_vec)/n))
   G_mat_eigen<-eigen(G_mat)$values
   G_mat_eigen<-abs(G_mat_eigen)
@@ -11,7 +11,7 @@ F_stat<-function(d_mat,predictor,confonding_stat=F,confonding_var=NA,r){
   G_mat_r_eigen<-G_mat_eigen^r
   G_mat_r<-(ide_mat-(one_vec%*%t(one_vec)/n))%*%G_mat_vector%*%diag(G_mat_r_eigen)%*%t(G_mat_vector)%*%(ide_mat-(one_vec%*%t(one_vec)/n))
   if(confonding_stat==T){
-    confonding_mat<-as.matrix(scale(confonding_var ,center=T, scale = F))
+    confonding_mat<-as.matrix(scale(confonding_var ,center=TRUE, scale = FALSE))
     X_mat<-cbind(pre_mat,confonding_mat)
     H_mat_confonding<-confonding_mat%*%ginv(t(confonding_mat)%*%confonding_mat)%*%t(confonding_mat)
     H_mat_X<-X_mat%*%ginv(t(X_mat)%*%X_mat)%*%t(X_mat)
@@ -82,12 +82,15 @@ permutation_null<-function(A,W){
 #' @return p_value_mat matrix of p-values with different distance and different r values
 #' @return final p-value
 #' @import GUniFrac
+#' @import PearsonDS
 #' @importFrom vegan vegdist
 #' @importFrom abind abind
+#' @import fBasics
+#' @import MASS
 #' @example inst/examples/test_examples.R
 #' @export
 
-adaptive_PREANOVA<-function(multi_d_mat,predictor,confonding_stat=F,confonding_var=NA,r_vec){
+EMANOVA<-function(multi_d_mat,predictor,confonding_stat=FALSE,confonding_var=NA,r_vec){
   number_of_distances<-length(multi_d_mat[1,1,])
   number_of_r<-length(r_vec)
   p_value_mat<-matrix(NA,nrow = number_of_distances, ncol = number_of_r)
@@ -100,16 +103,16 @@ adaptive_PREANOVA<-function(multi_d_mat,predictor,confonding_stat=F,confonding_v
       k_hat<-4/(gamma_hat^2)
       scaled_sample<-(result$F_stat-moments_result$expection_null)/sqrt(moments_result$variance_null)
       if(gamma_hat>0){
-        p_value_mat[i,j]<-ppearsonIII(q=scaled_sample,shape=k_hat,location=-sqrt(k_hat),scale=1/sqrt(k_hat),lower.tail = F)
+        p_value_mat[i,j]<-ppearsonIII(q=scaled_sample,shape=k_hat,location=-sqrt(k_hat),scale=1/sqrt(k_hat),lower.tail = FALSE)
       }
       else{
-        p_value_mat[i,j]<-ppearsonIII(q=scaled_sample,shape=k_hat,location=sqrt(k_hat),scale=-1/sqrt(k_hat),lower.tail = F)
+        p_value_mat[i,j]<-ppearsonIII(q=scaled_sample,shape=k_hat,location=sqrt(k_hat),scale=-1/sqrt(k_hat),lower.tail = FALSE)
       }
       gamma_hat_mat[i,j]<-gamma_hat
     }
   }
   cauchy_statistic<-(1/(number_of_distances*number_of_r))*sum(tan((0.5-p_value_mat)*pi))
   pvalue<-0.5-(atan(cauchy_statistic)/pi)
-  return(list(p_value_mat=p_value_mat, final_p_value=pvalue,gamma_hat_mat=gamma_hat_mat))
+  return(pvalue)
 }
 
