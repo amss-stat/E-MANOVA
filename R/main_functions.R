@@ -73,8 +73,12 @@ permutation_null<-function(A,W){
 }
 
 #' main function
-#' @description core function for calcualte EMANOVA p-values
-#' @param multi_d_mat distance matrix
+#' @description core function for calcualte EMANOVA p-value. Detail description of method can be found in
+#' paper "Ensemble test for microbiome data“(currently under review).
+#' @param multi_d_mat Input three dimensional distance matrix calculate based on microbiome OTU data.
+#' The distance can be calculated by GUniFrac function in package GUniFrac. The
+#' dimension of the multi_d_mat should be in n times n times number of distance,
+#' where n represents number of samples.
 #' @param predictor centered predictor variable
 #' @param confonding_stat variables indicate whether confonding variables should be included
 #' @param confonding_var confonding variables

@@ -13,7 +13,10 @@ EMANOVA(
 )
 }
 \arguments{
-\item{multi_d_mat}{distance matrix}
+\item{multi_d_mat}{Input three dimensional distance matrix calculate based on microbiome OTU data.
+The distance can be calculated by GUniFrac function in package GUniFrac. The
+dimension of the multi_d_mat should be in n times n times number of distance,
+where n represents number of samples.}
 
 \item{predictor}{centered predictor variable}
 
@@ -29,7 +32,8 @@ p_value_mat matrix of p-values with different distance and different r values
 final p-value
 }
 \description{
-core function for calcualte EMANOVA p-values
+core function for calcualte EMANOVA p-value. Detail description of method can be found in
+paper "Ensemble test for microbiome data“(currently under review).
 }
 \examples{
 library(GUniFrac)
