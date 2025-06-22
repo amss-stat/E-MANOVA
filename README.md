@@ -1,5 +1,6 @@
 # EMANOVA
 
+
 ## Overview
 EMANOVA provides tools for testing the association between microbiome and biological factors.
 
@@ -9,8 +10,9 @@ E-MANOVA (Ensemble multivariate analysis of variance using distance matrices) me
 ## Installation
 ```r
 remotes::install_github("amss-stat/EMANOVA")
+```
 
-## quick start
+## Quick start
 ```r
 library(EMANOVA)
 library(GUniFrac)
@@ -42,6 +44,10 @@ D.BC= as.matrix(vegan::vegdist(std_out, method="bray"))
 
 combine_distance<-abind::abind(D.05, Du, D.BC, along = 3)
 EMANOVA(combine_distance, smoke_stat, confonding_stat = FALSE, r_vec = c(0.125,0.25,0.5,1,2))
+```
+
+
+
 
 
 
