@@ -2,7 +2,7 @@
 % Please edit documentation in R/main_functions.R
 \name{EMANOVA}
 \alias{EMANOVA}
-\title{main function}
+\title{Main function}
 \usage{
 EMANOVA(
   multi_d_mat,
@@ -14,25 +14,24 @@ EMANOVA(
 }
 \arguments{
 \item{multi_d_mat}{Input three dimensional distance matrix calculate based on microbiome OTU data.
-The distance can be calculated by GUniFrac function in package GUniFrac. The
-dimension of the multi_d_mat should be in n times n times number of distance,
+The weighted UniFrac distance and unweighted UniFrac distance distance can be calculated by GUniFrac function in package GUniFrac.
+The Bray-Curtis distance can be calculated by vegdist function in package vegan. See examples for an illustration.
+The dimension of the multi_d_mat should be in n times n times number of distance used,
 where n represents number of samples.}
 
-\item{predictor}{centered predictor variable}
+\item{predictor}{Predictor variable could be binary(0-1) or continous.}
 
-\item{confonding_stat}{variables indicate whether confonding variables should be included}
+\item{confonding_stat}{Variables indicate whether confonding variables should be included}
 
-\item{confonding_var}{confonding variables}
+\item{confonding_var}{Confonding variables, used only when confonding_stat=TRUE}
 
-\item{r_vec}{vectors of r values}
+\item{r_vec}{Parameters vector of r values, suggested using value 0.125,0.25,0.5,1,2.}
 }
 \value{
-p_value_mat matrix of p-values with different distance and different r values
-
-final p-value
+P-value calculated by EMANOVA
 }
 \description{
-core function for calcualte EMANOVA p-value. Detail description of method can be found in
+Main function for calculating EMANOVA p-value. Detail description of method can be found in
 paper "Ensemble test for microbiome data“(currently under review).
 }
 \examples{
@@ -41,6 +40,7 @@ data("throat.otu.tab")
 data("throat.tree")
 data("throat.meta")
 
+####transfer the outcome variable into binary.
 smoke_stat<-rep(0,60)
 for (i in 1:60) {
   if(throat.meta$SmokingStatus[i]==throat.meta$SmokingStatus[1]){
@@ -51,18 +51,17 @@ for (i in 1:60) {
   }
 }
 
+####Calculate relative abundance.
 row.sum<-apply(throat.otu.tab,1,sum)
 std_out<-throat.otu.tab/row.sum
 
-##########
+####calculated the distance, D.05 is weighted UniFrac distance,
+####Du unweighted UniFrac distance, D.BC is Bray-Curtis distance.
 unifracs = GUniFrac::GUniFrac(std_out, throat.tree, alpha = c(0,0.5,1))$unifracs
-Dw  = unifracs[,,"d_1"]
-#Variance adjusted weighted UniFra
 Du  = unifracs[,,"d_UW"]
-D0  = unifracs[,,"d_0"]
 D.05= unifracs[,,"d_0.5"]
 D.BC= as.matrix(vegan::vegdist(std_out, method="bray"))
 
-dis_adaptive<-abind::abind(D.05, Du, D.BC, along = 3)
-EMANOVA(dis_adaptive, smoke_stat, confonding_stat = FALSE, r_vec = c(0.125,0.25,0.5,1,2))
+combine_distance<-abind::abind(D.05, Du, D.BC, along = 3)
+EMANOVA(combine_distance, smoke_stat, confonding_stat = FALSE, r_vec = c(0.125,0.25,0.5,1,2))
 }

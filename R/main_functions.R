@@ -72,19 +72,19 @@ permutation_null<-function(A,W){
   return(list(expection_null=mean.null, variance_null=variance.null, ske_null=skewness.null))
 }
 
-#' main function
-#' @description core function for calcualte EMANOVA p-value. Detail description of method can be found in
+#' Main function
+#' @description Main function for calculating EMANOVA p-value. Detail description of method can be found in
 #' paper "Ensemble test for microbiome data“(currently under review).
 #' @param multi_d_mat Input three dimensional distance matrix calculate based on microbiome OTU data.
-#' The distance can be calculated by GUniFrac function in package GUniFrac. The
-#' dimension of the multi_d_mat should be in n times n times number of distance,
+#' The weighted UniFrac distance and unweighted UniFrac distance distance can be calculated by GUniFrac function in package GUniFrac.
+#' The Bray-Curtis distance can be calculated by vegdist function in package vegan. See examples for an illustration.
+#' The dimension of the multi_d_mat should be in n times n times number of distance used,
 #' where n represents number of samples.
-#' @param predictor centered predictor variable
-#' @param confonding_stat variables indicate whether confonding variables should be included
-#' @param confonding_var confonding variables
-#' @param r_vec vectors of r values
-#' @return p_value_mat matrix of p-values with different distance and different r values
-#' @return final p-value
+#' @param predictor Predictor variable could be binary(0-1) or continous.
+#' @param confonding_stat Variables indicate whether confonding variables should be included
+#' @param confonding_var Confonding variables, used only when confonding_stat=TRUE
+#' @param r_vec Parameters vector of r values, suggested using value 0.125,0.25,0.5,1,2.
+#' @return P-value calculated by EMANOVA
 #' @import GUniFrac
 #' @import PearsonDS
 #' @importFrom vegan vegdist
