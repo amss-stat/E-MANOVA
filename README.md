@@ -9,7 +9,7 @@ E-MANOVA (Ensemble multivariate analysis of variance using distance matrices) me
 
 ## Installation
 ```r
-remotes::install_github("amss-stat/EMANOVA")
+remotes::install_github("amss-stat/E-MANOVA")
 ```
 
 ## Quick start
